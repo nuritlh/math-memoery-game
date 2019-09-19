@@ -1,0 +1,40 @@
+.ui.blue.label {
+    margin: 10px 0;
+}
+.cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.card {
+    display: flex;
+    flex: 1 0 21%;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    /* background-color: #d4cdcd; */
+    margin: 2px;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: cursive;
+}
+
+.card-background {
+    background-image: url("./image/workiz.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #ffffff;
+}
+
+.flipped {
+  animation-name: flipped;
+  animation-duration: 0.3s;
+}
+
+
+@keyframes flipped {
+  from {transform: rotateY(180deg);}
+  to {transform: rotateY(0deg);}
+}

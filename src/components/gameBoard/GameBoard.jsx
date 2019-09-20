@@ -18,15 +18,6 @@ class GameBoard extends React.Component {
         this.initBoard();
     }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     if(this.state.isPartOfSeries === false) {
-    //         this.setState({
-    //             flippedCards: [],
-    //             isPartOfSeries: true
-    //         })
-    //     }
-    // }
-
     initBoard = () => {
         const gboard = Service.getBoardGame(this.state.difficulty);
         this.setState({
@@ -35,49 +26,68 @@ class GameBoard extends React.Component {
         console.log('gboard', gboard);   
     }
 
-    selectCard = (dataValue, powers) => {
-        this.setState({
-            flippedCards: this.state.flippedCards.concat(dataValue)
-        })
-        let isPartOfSeries = Service.checkIfSeries(dataValue, powers);
-        this.setState({
-            isPartOfSeries
-        })
-        console.log('isPartOfSeries',isPartOfSeries);
-        if(!isPartOfSeries) {
-            this.setState({
-                flippedCards: []
+    selectCard = (value, rowIdx, collIdx) => {
+        if( this.state.flippedCards.length < 3 && this.state.isPartOfSeries) {
+            let gBoard = Service.flippedCard(this.state.gboard, rowIdx, collIdx);
+            const card = { value, rowIdx, collIdx }
+            this.setState((prevState) => { 
+                return {
+                    gBoard,
+                    flippedCards: prevState.flippedCards.concat(card)
+            }}, () => {
+                let isPartOfSeries = Service.checkIfSeries(this.state.flippedCards);
+                this.setState({
+                    isPartOfSeries
+                }, () => {
+                    console.log('isPartOfSeries', isPartOfSeries);
+                    console.log('gBoard', this.state.gboard);
+                    if(!isPartOfSeries) {
+                        this.state.flippedCards.forEach(card => {
+                            gBoard = Service.flippedCard(this.state.gboard, card.rowIdx, card.collIdx);
+                        })
+                    console.log('gBoard', this.state.gboard);
+                    setTimeout(() => {
+                        this.setState({
+                            gBoard,
+                            flippedCards: [],
+                            isPartOfSeries: true
+                        })
+                    }, 750)
+                    }
+                })
+                
             })
+            
         }
-        this.checkIfSeries();
     }
 
-    checkIfSeries = () => {
-        if(this.state.flippedCards.length === 2) {
-            //add point to user
-            //clear flippedCards
-            this.setState({
-                flippedCards: []
-            })
-        }
-    }
+    // checkWin = () => {
+    //     if(this.state.flippedCards.length > 2) {
+    //         const gboard = Service.markCardAsFlipped(this.state.gboard, this.state.flippedCards);
+    //         //add point to user
+    //         //clear flippedCards
+    //         console.log(gboard);
+            
+    //         this.setState({
+    //             gboard,
+    //             flippedCards: []
+    //         })
+    //     }
+    // }
 
     renderBoard = () => { 
-        return this.state.gboard.map(row => {
-            return row.map(coll => {
-                return this.renderCard(coll)
+        return this.state.gboard.map((row, rowIdx) => {
+            return row.map((card, collIdx) => {
+                return <Card
+                selectCard={ e => this.selectCard(card.value, rowIdx, collIdx)}
+                key={card.value}
+                value={card.value}
+                isFlipped={card.isFlipped} />
                 })
         })
     }
 
-    renderCard = (coll) => {
-        return <Card
-            isPartOfSeries={this.state.isPartOfSeries}
-            flippedCards={this.state.flippedCards}
-            coll={coll}
-            selectCard={this.selectCard}
-            key={coll.value}/>
-    }
+
 
     render() {
         return (

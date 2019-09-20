@@ -1,9 +1,9 @@
-var flippedCards = [];
-var isFirstCard = true;
-var counter = 0;
+var roundTime;
+
 export default {
     getBoardGame,
-    checkIfSeries
+    checkIfSeries,
+    flippedCard
 }
 
 function getBoardGame(difficulty) {
@@ -51,13 +51,13 @@ function buildBoard(boardRow, boardCol, series) {
             let num = Math.pow(series[i], j +1 );
             const card = {
                 value: num,
-                powers: [Math.pow(series[i], 1 ),Math.pow(series[i], 2 ),Math.pow(series[i], 3 )],
-                isflipped: false
+                isFlipped: false,
+                isMatched: false
             }
             board.push(card);
         }
     };
-    // shuffle(board)
+    // shuffle(board);
     var gboard = [];
     let k = 0;
     for(let i = 0; i < boardRow; i++ ) {
@@ -83,25 +83,90 @@ function shuffle(a) {
     return a;
 }
 
-function checkIfSeries(value, powers) {
-    if (isFirstCard) {
-        flippedCards = powers;
-        isFirstCard = false;
-        return true;
-    }
-    if(flippedCards.indexOf(value) !== -1) {
-        counter++
-        if(counter === 2) {
-            flippedCards = [];
-            counter = 0;
-            isFirstCard = true;
-        }
-        return true;
-    }
-    else {
-        flippedCards = [];
-        isFirstCard = true;
-        counter = 0;
-        return false
-    };
+function flippedCard(board, rowIdx, collIdx) {
+    board[rowIdx][collIdx] = {...board[rowIdx][collIdx], isFlipped: !board[rowIdx][collIdx].isFlipped};
+    return board
 }
+
+function checkIfSeries(values) {
+    if (values.length < 2) {
+        return true;
+    }
+    const sortedValues = values.sort((a,b) =>  a.value - b.value );
+    const min_num = sortedValues[0].value;
+    const mid_num = sortedValues[1].value;
+
+    if (values.length === 2) {
+        if (mid_num === Math.pow(min_num, 2) ||
+            mid_num === Math.pow(min_num, 3) ||
+            Math.pow(min_num, 1/2) === Math.pow(mid_num, 1/3)
+            ) {
+                return true;
+            }
+    }
+
+    if (values.length === 3) {
+        if (Math.pow(min_num, 2) === mid_num &&
+            Math.pow(min_num, 3) === sortedValues[2].value) {
+                return true;
+            }
+    }
+
+    
+
+    return false;
+
+}
+
+// function doesManyThings(time, values) {
+//     if (isFirstCard) {
+//         startRoundTime(time)
+//         isFirstCard = false;
+//         return true;
+//     }
+//     if(flippedCards.indexOf(value) !== -1) {
+//         counter++
+//         if(counter === 2) {
+//             flippedCards = [];
+//             counter = 0;
+//             clearInterval(rountTime);
+//             isFirstCard = true;
+//         }
+//         return true;
+//     }
+//     else {
+//         flippedCards = [];
+//         isFirstCard = true;
+//         counter = 0;
+//         clearInterval(rountTime);
+//         return false
+//     };
+// }
+
+function markCardAsFlipped(board, flippedCards) {
+    board.forEach(row => {
+        row.forEach(coll => {
+            if( flippedCards.indexOf(coll.value) !== -1 ) {
+                coll.isFlipped = true;
+            }
+        })
+    })
+    
+    return board
+}
+
+function startRoundTime(time) {
+    var countDownDate = new Date();
+    countDownDate.setSeconds(countDownDate.getSeconds() + time + 1);
+
+    roundTime = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById('timer').innerHTML = seconds + 's'
+        if (distance < 0) {
+          clearInterval(roundTime);
+        }
+      }, 1000);
+}
+

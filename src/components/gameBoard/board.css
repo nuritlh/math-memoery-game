@@ -1,3 +1,8 @@
+.header-settings {
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .ui.blue.label {
     margin: 10px 0;
 }
@@ -13,7 +18,7 @@
     justify-content: center;
     align-items: center;
     height: 100px;
-    /* background-color: #d4cdcd; */
+    border-radius: 10px;
     margin: 2px;
     font-size: 2rem;
     font-weight: bold;

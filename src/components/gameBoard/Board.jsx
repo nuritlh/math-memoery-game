@@ -1,7 +1,6 @@
 import React from 'react';
 
 import GameBoard from './GameBoard';
-
 import './board.css';
 
 class Board extends React.Component {
@@ -37,7 +36,9 @@ class Board extends React.Component {
                         </div>
                         <div className="ui green label">
                         Time
-                            <div className="detail" id="timer"></div>
+                            <div className="detail" id="timer">
+                                {/* <Timer time={this.state.timePerRound} /> */}
+                            </div>
                         </div>
                     </div>
                 </header>

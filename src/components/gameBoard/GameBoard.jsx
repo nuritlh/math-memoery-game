@@ -2,17 +2,19 @@ import React from 'react';
 
 import Service from '../../services/index';
 import Card from './Card';
+import Timer from './Timer';
+import ReactCountdownClock from 'ReactCountdownClock';
 
 class GameBoard extends React.Component {
 
     state = {
         numberOfPlayers: this.props.numberOfPlayers,
-        timePerRound: this.props.timePerRound,
         difficulty: this.props.difficulty,
         gboard: null,
         flippedCards: [],
         isPartOfSeries: true
     }
+
 
     componentDidMount() {
         this.initBoard();
@@ -35,17 +37,16 @@ class GameBoard extends React.Component {
                     gBoard,
                     flippedCards: prevState.flippedCards.concat(card)
             }}, () => {
+                // if( this.state.flippedCards.length === 1 ) this.startRoundTime();
                 let isPartOfSeries = Service.checkIfSeries(this.state.flippedCards);
                 this.setState({
                     isPartOfSeries
                 }, () => {
-                    console.log('isPartOfSeries', isPartOfSeries);
-                    console.log('gBoard', this.state.gboard);
                     if(!isPartOfSeries) {
+                        // this.cleartRoundTime();
                         this.state.flippedCards.forEach(card => {
                             gBoard = Service.flippedCard(this.state.gboard, card.rowIdx, card.collIdx);
                         })
-                    console.log('gBoard', this.state.gboard);
                     setTimeout(() => {
                         this.setState({
                             gBoard,
@@ -54,26 +55,16 @@ class GameBoard extends React.Component {
                         })
                     }, 750)
                     }
-                })
-                
+                });
+                if( this.state.flippedCards.length === 3 && isPartOfSeries) {
+                    // this.cleartRoundTime();
+                    this.setState({
+                        flippedCards: []
+                    })
+                }
             })
-            
         }
     }
-
-    // checkWin = () => {
-    //     if(this.state.flippedCards.length > 2) {
-    //         const gboard = Service.markCardAsFlipped(this.state.gboard, this.state.flippedCards);
-    //         //add point to user
-    //         //clear flippedCards
-    //         console.log(gboard);
-            
-    //         this.setState({
-    //             gboard,
-    //             flippedCards: []
-    //         })
-    //     }
-    // }
 
     renderBoard = () => { 
         return this.state.gboard.map((row, rowIdx) => {
@@ -87,11 +78,20 @@ class GameBoard extends React.Component {
         })
     }
 
-
+    timeIsUp = () => {
+        console.log('time end');
+        
+    }
 
     render() {
         return (
             <div className="cards-wrapper">
+                {/* <Timer  seconds={this.state.seconds} /> */}
+                <ReactCountdownClock seconds={60}
+                     color="#000"
+                     alpha={0.9}
+                     size={300}
+                     onComplete={this.timeIsUp} />
                 {this.state.gboard && 
                     this.renderBoard()}
             </div>

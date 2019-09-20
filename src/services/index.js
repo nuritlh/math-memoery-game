@@ -3,7 +3,9 @@ var roundTime;
 export default {
     getBoardGame,
     checkIfSeries,
-    flippedCard
+    flippedCard,
+    startRoundTime,
+    cleartRoundTime
 }
 
 function getBoardGame(difficulty) {
@@ -99,7 +101,8 @@ function checkIfSeries(values) {
     if (values.length === 2) {
         if (mid_num === Math.pow(min_num, 2) ||
             mid_num === Math.pow(min_num, 3) ||
-            Math.pow(min_num, 1/2) === Math.pow(mid_num, 1/3)
+            Math.pow(min_num, 1/2) === Math.pow(mid_num, 1/3) ||
+            Math.pow(min_num, 1/2) === Math.ceil(Math.pow(mid_num, 1/3))
             ) {
                 return true;
             }
@@ -118,31 +121,6 @@ function checkIfSeries(values) {
 
 }
 
-// function doesManyThings(time, values) {
-//     if (isFirstCard) {
-//         startRoundTime(time)
-//         isFirstCard = false;
-//         return true;
-//     }
-//     if(flippedCards.indexOf(value) !== -1) {
-//         counter++
-//         if(counter === 2) {
-//             flippedCards = [];
-//             counter = 0;
-//             clearInterval(rountTime);
-//             isFirstCard = true;
-//         }
-//         return true;
-//     }
-//     else {
-//         flippedCards = [];
-//         isFirstCard = true;
-//         counter = 0;
-//         clearInterval(rountTime);
-//         return false
-//     };
-// }
-
 function markCardAsFlipped(board, flippedCards) {
     board.forEach(row => {
         row.forEach(coll => {
@@ -156,6 +134,8 @@ function markCardAsFlipped(board, flippedCards) {
 }
 
 function startRoundTime(time) {
+    var time = 3;
+    document.getElementById('timer').innerHTML = '15s'
     var countDownDate = new Date();
     countDownDate.setSeconds(countDownDate.getSeconds() + time + 1);
 
@@ -163,10 +143,18 @@ function startRoundTime(time) {
         var now = new Date().getTime();
         var distance = countDownDate - now;
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        document.getElementById('timer').innerHTML = seconds + 's'
+        if( seconds >= 0 ) {
+            document.getElementById('timer').innerHTML = seconds + 's'
+        }
         if (distance < 0) {
           clearInterval(roundTime);
+          document.getElementById('timer').innerHTML = '15s';
+          return false;
         }
       }, 1000);
 }
 
+function cleartRoundTime() {
+    document.getElementById('timer').innerHTML = '15s'
+    clearInterval(roundTime);
+}

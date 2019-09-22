@@ -1,40 +1,54 @@
 import React from 'react';
 
-import ModalSettings from '../components/modalSettings/ModalSettings';
-import Board from '../components/gameBoard/Board';
+import ModalSettings from './modals/ModalSettings';
+import BoardLayout from '../components/gameBoard/BoardLayout';
 
-import './modalSettings/modalSettings.css'
+import './modals/modalSettings.css'
+import './gameWallpaper.css';
 
 class App extends React.Component {
 
     state = {
-        isShowing: false,
-        numberOfPlayers: 2,
+        showSettingsModal: true,
+        players: 2,
         timePerRound: 15,
         difficulty: 'easy'
     }
 
     closeModalHandler = () => {
         this.setState({
-            isShowing: false
+            showSettingsModal: false
         });
+    }
+
+    startOver = () => {
+        this.setState({
+            showSettingsModal: true,
+            players: 2,
+            timePerRound: 15,
+            difficulty: 'easy'
+        })
     }
 
     onChange = e => this.setState({ [e.target.name]: e.target.value })
 
     render() {
         return (
-            <div className="ui container">
-                {this.state.isShowing && 
-                    <ModalSettings 
-                        className="modal"
-                        close={this.closeModalHandler}
-                        onChange={this.onChange} />}
-                {!this.state.isShowing &&  
-                    <Board
-                        numberOfPlayers={this.state.numberOfPlayers}
-                        timePerRound={this.state.timePerRound}
-                        difficulty={this.state.difficulty} /> }
+            <div className="game-wallpaper">
+                <div className="ui container">
+                    {this.state.showSettingsModal && 
+                        <ModalSettings 
+                            className="modal"
+                            close={this.closeModalHandler}
+                            onChange={this.onChange} />}
+                    {!this.state.showSettingsModal &&  
+                        <BoardLayout
+                            className="board"
+                            players={this.state.players}
+                            timePerRound={this.state.timePerRound}
+                            difficulty={this.state.difficulty} /> }
+                    <button className="ui red button" onClick={this.startOver}>Start Over</button>
+                </div>
             </div>
         )
     }

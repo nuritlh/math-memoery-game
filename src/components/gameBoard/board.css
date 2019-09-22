@@ -1,10 +1,39 @@
+.board-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board {
+  width: 85%;
+  margin: 10px 0;
+}
+
 .header-settings {
   display: flex;
-    justify-content: space-between;
-    align-items: center;
+  flex-direction: column;
 }
-.ui.blue.label {
+
+.ui.label {
     margin: 10px 0;
+}
+.ui.blue.label , .ui.pink.label{
+  margin: 0;
+}
+
+.game-settings {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.players {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.players table {
+  margin: 0 0 20px 20px !important;
 }
 .cards-wrapper {
     display: flex;
@@ -12,6 +41,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .card {
     display: flex;
     flex: 1 0 21%;
@@ -42,4 +72,11 @@
 @keyframes flipped {
   from {transform: rotateY(180deg);}
   to {transform: rotateY(0deg);}
+}
+.timer-wrapper {
+  font-weight: bold;
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

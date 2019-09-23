@@ -1,4 +1,4 @@
-# Workiz Home Test
+# Math memory game Home Test
 
 This is a memory game that you can play with friends.
 
